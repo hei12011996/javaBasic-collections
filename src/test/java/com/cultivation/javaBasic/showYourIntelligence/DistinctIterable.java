@@ -28,19 +28,41 @@ class DistinctIterator<E> implements Iterator<E> {
     // <--start
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final Iterator<E> iterator;
+    private HashMap<E, Boolean> storeMap;
+    private int outputCount;
 
     DistinctIterator(Iterator<E> iterator) {
         this.iterator = iterator;
+        this.storeMap = new HashMap<E, Boolean>();
+        this.outputCount = 0;
+        constructStoreMap();
+    }
+
+    private void constructStoreMap(){
+        while(iterator.hasNext()){
+            storeMap.putIfAbsent(iterator.next(), false);
+        }
     }
 
     @Override
     public boolean hasNext() {
-        throw new NotImplementedException();
+        return outputCount < storeMap.size();
+//        throw new NotImplementedException();
     }
 
     @Override
     public E next() {
-        throw new NotImplementedException();
+        outputCount++;
+        E returnObject = null;
+        for (Map.Entry<E, Boolean> entry : storeMap.entrySet()){
+            if(!entry.getValue()){
+                returnObject = entry.getKey();
+                entry.setValue(true);
+                break;
+            }
+        }
+        return returnObject;
+//        throw new NotImplementedException();
     }
     // --end->
 }
